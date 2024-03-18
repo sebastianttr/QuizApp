@@ -1,0 +1,30 @@
+version: "3.9"
+
+networks:
+  networkdb:
+    ipam:
+      config:
+        - subnet: 172.32.0.0/16
+          gateway: 172.32.0.1
+
+services:
+  postgre:
+    image: postgres:15.3-bullseye
+    volumes:
+      - ./postgresql-conf.conf:/config/postgresql.conf
+      - db:/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD={!B]{}]ag#K&nBK"_!Z%
+      - POSTGRES_DB=main
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    command: postgres -c config_file='/config/postgresql.conf'
+    networks:
+      networkdb:
+        ipv4_address: 172.32.0.6
+volumes:
+  db:
